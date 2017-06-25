@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "jsonwebtoken": "^7.4.1",
@@ -17,6 +18,14 @@
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^4.0.0"
+    "passport-local-mongoose": "^4.0.0",
+    "sails-postgresql": "^0.11.4",
+    "waterline": "^0.11.11"
+  },
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "mockgoose": "^7.3.3",
+    "sails-disk": "^0.10.10"
   }
 }

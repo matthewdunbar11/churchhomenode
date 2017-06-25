@@ -1,6 +1,4 @@
-const mongoose = require('mongoose');
 const passport = require('passport');
-const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const passportJWT = require('passport-jwt');
 
@@ -12,15 +10,16 @@ userController.home = function(req, res) {
 }
 
 userController.doRegister = function(req, res) {
-  User.register(new User({ username: req.body.username, name: req.body.name }), req.body.password, function(err, user) {
-    if (err) {
-      return res.send(err);
-    }
+  req.app.models.user.create({email: req.body.username, password: req.body.password}).exec(function(err, user) {
+      if(err) {
+        return res.send(err);
+      }
 
-    passport.authenticate('local')(req, res, function() {
-      res.send('OK');
-    })
-  });
+      passport.authenticate('local')(req, res, function() {
+        res.send('OK');
+      });
+  })
+
 };
 
 
@@ -30,32 +29,72 @@ jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeader();
 jwtOptions.secretOrKey = 'asdf';
 
 userController.doLogin = function(req, res) {
+  passport.authenticate('local', function(err, user, info) {
+      if ((err) || (!user)) {
+          return res.status(401).json({message:"unable to authenticate"});
+      }
+      req.logIn(user, function(err) {
+          if (err) res.send(err);
+          if(user) {
+            var expires = new Date();
+            expires.setHours(expires.getHours() + 4);
+
+            var payload = {
+              id: user.id,
+              exp: Math.trunc(expires.getTime() / 1000)
+            };
+
+            var token = jwt.sign(payload, jwtOptions.secretOrKey);
+
+            res.json({
+              token: token,
+            });
+          }
+          else {
+            res.status(401).json({message:"unable to authenticate"});
+          }
+      });
+
+  });
+
+  /*
   if(req.body.username && req.body.password) {
     var username = req.body.username;
     var password = req.body.password;
   }
+  var query = User.findOne({username: username});
 
-  var user = User.find({username: username});
-  if(!user) {
-    res.status(401).json({mesage:"user not found"});
-  }
-  console.log(user[0].password);
-  console.log(req.body.password);
-  if(user[0].password === req.body.password) {
-    var payload = {id: user[0].id};
-    var token = jwt.sign(payload, jwtOptions.secretOrKey);
-    res.json({message: "ok", token: token});
-  }
-  else {
-    res.status(401).json({mesage:"unable to authenticate"});
-  }
+  query.findOne(function(err, user) {
+    if(!user) {
+      res.status(401).json({mesage:"unable to authenticate"});
+    }
+
+    user.authenticate(req.body.password, function(err, user, passwordErr) {
+        if(user) {
+          var expires = new Date();
+          expires.setHours(expires.getHours() + 4);
+
+          var payload = {
+            id: user.id,
+            exp: expires.getTime() / 1000
+          };
+
+          var token = jwt.sign(payload, jwtOptions.secretOrKey);
+
+          res.json({
+            token: token,
+
+          });
+        }
+        else {
+          res.status(401).json({message:"unable to authenticate"});
+        }
+    });
+
+  });*/
+
 }
-/*userController.doLogin = function(req, res) {
-  passport.authenticate('local')(req, res, function() {
-    res.send('OK');
-  });
-}
-*/
+
 userController.logout = function(req, res) {
   req.logout();
   res.send('OK');

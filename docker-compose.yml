@@ -1,13 +1,13 @@
 version: '3'
 
 services:
-  mongo:
-    image: mongo
-    ports:
-    - "27017:27017"
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=rootpassword1!
   authentication:
     build: './authentication'
     ports:
       - "8080:8080"
     depends_on:
-      - mongo
+      - db
