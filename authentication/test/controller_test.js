@@ -23,12 +23,18 @@ module.exports = function(app, controllerName) {
           });
         },
         status: function(obj) {
-          callback({
-            send: null,
-            json: null,
-            status: obj
-          })
+          return {
+            send: function(s) {
+              callback({
+                send: s,
+                status: obj,
+                json: null
+              })
+            }
+          }
         }
+      }, function next() {
+        
       });
     }
 

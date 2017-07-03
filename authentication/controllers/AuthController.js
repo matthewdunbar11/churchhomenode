@@ -55,7 +55,7 @@ userController.doLogin = function(req, res) {
           }
       });
 
-  });
+  })(req,res);
 
   /*
   if(req.body.username && req.body.password) {

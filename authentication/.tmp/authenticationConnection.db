@@ -1,8 +1,30 @@
 {
   "data": {
-    "user": []
+    "role": [],
+    "user": [],
+    "role_roles_role__user_roles": []
   },
   "schema": {
+    "role": {
+      "name": {
+        "type": "string"
+      },
+      "siteId": {
+        "type": "integer"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
     "user": {
       "email": {
         "type": "string",
@@ -23,11 +45,39 @@
       "updatedAt": {
         "type": "datetime"
       }
+    },
+    "role_roles_role__user_roles": {
+      "id": {
+        "primaryKey": true,
+        "unique": true,
+        "autoIncrement": true,
+        "type": "integer"
+      },
+      "user_roles": {
+        "type": "integer",
+        "foreignKey": true,
+        "references": "user",
+        "on": "id",
+        "via": "role_roles_role"
+      },
+      "role_roles_role": {
+        "type": "integer",
+        "foreignKey": true,
+        "references": "role",
+        "on": "id",
+        "via": "user_roles"
+      }
     }
   },
   "counters": {
     "user": {
-      "id": 73
+      "id": 191
+    },
+    "role": {
+      "id": 5
+    },
+    "role_roles_role__user_roles": {
+      "id": 5
     }
   }
 }

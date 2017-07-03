@@ -10,6 +10,7 @@ const JwtStrategy = passportJWT.Strategy;
 
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt');
+const jwtParser = require('./middleware/jwt_parser');
 
 passport.serializeUser(function(user, done) {
     done(null, user.id);
@@ -33,7 +34,6 @@ passport.use(new LocalStrategy({
       if (!user) {
         return done(null, false, { message: 'Incorrect email.' });
       }
-
       bcrypt.compare(password, user.password, function (err, res) {
           if (!res)
             return done(null, false, {
@@ -61,6 +61,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(jwtParser);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/', require('./routes'));

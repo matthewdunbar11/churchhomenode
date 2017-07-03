@@ -1,13 +1,30 @@
 version: '3'
 
 services:
-  db:
+  authenticationdb:
     image: postgres
     environment:
       - POSTGRES_PASSWORD=rootpassword1!
+    ports:
+      - "5432:5432"
   authentication:
     build: './authentication'
     ports:
       - "8080:8080"
+    environment:
+      - DB_PASSWORD=rootpassword1!
+      - DB_USER=postgres
+      - DB_HOST=authenticationdb
+      - DB_NAME=postgres
     depends_on:
-      - db
+      - authenticationdb
+  questions_db:
+    image: mongo
+  questions:
+    build: './questions'
+    ports:
+      - "8070:8070"
+    environment:
+      - DB_HOST=questions_db
+    depends_on:
+      - questions_db

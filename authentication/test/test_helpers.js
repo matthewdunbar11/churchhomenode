@@ -40,4 +40,4 @@ beforeEach((next) => {
 });
 
 
-module.exports = { app: app };
+module.exports = { app: app }

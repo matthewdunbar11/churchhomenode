@@ -19,6 +19,8 @@ var User = Waterline.Collection.extend({
       required: true
     },
 
+    roles: { collection: 'Role' },
+
     toJSON: function() {
       var obj = this.toObject();
       delete obj.password;
